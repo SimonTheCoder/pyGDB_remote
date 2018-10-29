@@ -1,21 +1,22 @@
 
 import socket
 import re
+from threading import Thread,currentThread,activeCount
 
 from checksum import checksum
 
-
+__DEBUG__ = True
 
 class Sender:
     def __init__(self,conn):
         self.conn = conn
         self.last_sent = ("",True)
     def send(self,data,need_checksum=True):
-        print "<- %s" % data
+        if __DEBUG__ is True:print "<- %s" % data
         if need_checksum:
-            self.conn.send("$%s#%s" % (data,checksum(data)))
+            self.conn.sendall("$%s#%s" % (data,checksum(data)))
         else:
-            self.conn.send(data)
+            self.conn.sendall(data)
         self.last_sent = (data,need_checksum)
     def resend(self):
         self.send(self.last_sent[0],self.last_sent[1])
@@ -23,6 +24,7 @@ class Sender:
 class Packet:
     packetRE = re.compile(r'([\+\-]*)\$([^#]+)#([0-9a-f]{2})');
     def __init__(self,raw_data):
+        self.raw_data = raw_data
         self.ack = None
         self.command = None
         self.checksum = None
@@ -56,7 +58,79 @@ class Packet:
         else:
             return False
 
+class GDB_server(object):
+    def __init__(self, host="127.0.0.1" , port=1234):
+        self.host = host
+        self.port = port
+        self.ack_mode =True
+    
+    def start(self):
+        self.s = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
+        self.s.setsockopt(socket.SOL_SOCKET,socket.SO_REUSEADDR,1)
+        self.s.bind((self.host, self.port))
+        self.s.listen(1)
+        if __DEBUG__ is True:print "Server listenning %s:%d" % (self.host,self.port) 
+        self.conn,self.gdb_addr = self.s.accept()
+        if __DEBUG__ is True:print "connet from:",self.gdb_addr
+        self.sender = Sender(self.conn)
+
+        #enter main loop
+        while True:
+            data = self.conn.recv(4096+8)
+            if len(data) == 0:
+                conn.close()
+                print "connect lost."
+                break
+
+            #pump up packet
+            if __DEBUG__ is True:print "raw data: %s" % data            
+            pack = Packet(data)
+            self.packet_handle(pack)
+
+    def packet_handle(self,packet):
+        '''Abstract Method'''
+        pass
+    
+    def send(self,data,need_checksum=True):
+        self.sender.send(data,need_checksum)
+
+class Dummy_device(GDB_server):
+    def packet_handle(self,packet):
+        
+        pass
+
+class Proxy_server(GDB_server):
+    def __init__(self,host,port):
+        super(Proxy_server,self).__init__(host,port)
+        self.socks = None
+    
+    def revc_from_qemu(self):
+        while True:
+            try:
+                res_data = self.socks.recv(4096)
+                print("GOT: %s" % res_data)
+            except socket.timeout:
+                print("qemu gdb time out!")
+                res_data = "-"
+            self.send(res_data, False)
+    def connect_real(self,host="127.0.0.1",port=1234):
+        if self.socks is not None:
+            return
+        socks = socket.socket()
+        #socks.settimeout(1)
+        socks.connect((host,port))
+        self.socks = socks
+        Thread(target = self.revc_from_qemu, args =()).start()
+ 
+    def packet_handle(self,packet):
+        self.connect_real() 
+        self.socks.sendall(packet.raw_data)
+
 if __name__ == "__main__":
+    server = Proxy_server("127.0.0.1", 51234)
+    server.start()
+
+if __name__ == "__main__old":
     s = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
     s.setsockopt(socket.SOL_SOCKET,socket.SO_REUSEADDR,1)  
     s.bind(('127.0.0.1',1234))

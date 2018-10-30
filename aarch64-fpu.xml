@@ -1,0 +1,44 @@
+opyright (C) 2009-2012 Free Software Foundation, Inc.
+Contributed by ARM Ltd.
+
+Copying and distribution of this file, with or without modification,
+are permitted in any medium without royalty provided the copyright
+notice and this notice are preserved. -->
+
+<!DOCTYPE feature SYSTEM "gdb-target.dtd">
+<feature name="org.gnu.gdb.aarch64.fpu">
+<vector id="v2d" type="ieee_double" count="2"/>
+<vector id="v2u" type="uint64" count="2"/>
+<vector id="v2i" type="int64" count="2"/>
+<vector id="v4f" type="ieee_single" count="4"/>
+<vector id="v4u" type="uint32" count="4"/>
+<vector id="v4i" type="int32" count="4"/>
+<vector id="v8u" type="uint16" count="8"/>
+<vector id="v8i" type="int16" count="8"/>
+<vector id="v16u" type="uint8" count="16"/>
+<vector id="v16i" type="int8" count="16"/>
+<vector id="v1u" type="uint128" count="1"/>
+<vector id="v1i" type="int128" count="1"/>
+<union id="vnd">
+<field name="f" type="v2d"/>
+<field name="u" type="v2u"/>
+<field name="s" type="v2i"/>
+</union>
+<union id="vns">
+<field name="f" type="v4f"/>
+<field name="u" type="v4u"/>
+<field name="s" type="v4i"/>
+</union>
+<union id="vnh">
+<field name="u" type="v8u"/>
+<field name="s" type="v8i"/>
+</union>
+<union id="vnb">
+<field name="u" type="v16u"/>
+<field name="s" type="v16i"/>
+</union>
+<union id="vnq">
+<field name="u" type="v1u"/>
+<field name="s" type="v1i"/>
+</union>
+

@@ -1,0 +1,581 @@
+python dumy_remote.py 
+Server listenning 127.0.0.1:51234
+connet from: ('127.0.0.1', 35480)
+raw data: +$qSupported:multiprocess+;qRelocInsn+#2a
+GOT: +$PacketSize=1000;qXfer:features:read+#cc
+<- +$PacketSize=1000;qXfer:features:read+#cc
+raw data: +$Hg0#df
+GOT: +$OK#9a
+<- +$OK#9a
+raw data: +$qXfer:features:read:target.xml:0,ffb#79
+GOT: +
+<- +
+GOT: $l<?xml version="1.0"?><!DOCTYPE target SYSTEM "gdb-target.dtd"><target><architecture>aarch64</architecture><xi:include href="aarch64-core.xml"/><xi:include href="aarch64-fpu.xml"/></target>#b6
+<- $l<?xml version="1.0"?><!DOCTYPE target SYSTEM "gdb-target.dtd"><target><architecture>aarch64</architecture><xi:include href="aarch64-core.xml"/><xi:include href="aarch64-fpu.xml"/></target>#b6
+raw data: +
+raw data: $qXfer:features:read:aarch64-core.xml:0,ffb#31
+GOT: +
+<- +
+GOT: $l<?xml version="1.0"?>
+<!-- Copyright (C) 2009-2012 Free Software Foundation, Inc.
+Contributed by ARM Ltd.
+
+Copying and distribution of this file, with or without modification,
+are permitted in any medium without royalty provided the copyright
+notice and this notice are preserved. -->
+
+<!DOCTYPE feature SYSTEM "gdb-target.dtd">
+<feature name="org.gnu.gdb.aarch64.core">
+<reg name="x0" bitsize="64"/>
+<reg name="x1" bitsize="64"/>
+<reg name="x2" bitsize="64"/>
+<reg name="x3" bitsize="64"/>
+<reg name="x4" bitsize="64"/>
+<reg name="x5" bitsize="64"/>
+<reg name="x6" bitsize="64"/>
+<reg name="x7" bitsize="64"/>
+<reg name="x8" bitsize="64"/>
+<reg name="x9" bitsize="64"/>
+<reg name="x10" bitsize="64"/>
+<reg name="x11" bitsize="64"/>
+<reg name="x12" bitsize="64"/>
+<reg name="x13" bitsize="64"/>
+<reg name="x14" bitsize="64"/>
+<reg name="x15" bitsize="64"/>
+<reg name="x16" bitsize="64"/>
+<reg name="x17" bitsize="64"/>
+<reg name="x18" bitsize="64"/>
+<reg name="x19" bitsize="64"/>
+<reg name="x20" bitsize="64"/>
+<reg name="x21" bitsize="64"/>
+<reg name="x22" bitsize="64"/>
+<reg name="x23" bitsize="64"/>
+<reg name="x24" bitsize="64"/>
+<reg name="x25" bitsize="64"/>
+<reg name="x26" bitsize="64"/>
+<reg name="x27" bitsize="64"/>
+<reg name="x28" bitsize="64"/>
+<reg name="x29" bitsize="64"/>
+<reg name="x30" bitsize="64"/>
+<reg name="sp" bitsize="64" type="data_ptr"/>
+
+<reg name="pc" bitsize="64" type="code_ptr"/>
+<reg name="cpsr" bitsize="32"/>
+</feature>
+#2d
+<- $l<?xml version="1.0"?>
+<!-- Copyright (C) 2009-2012 Free Software Foundation, Inc.
+Contributed by ARM Ltd.
+
+Copying and distribution of this file, with or without modification,
+are permitted in any medium without royalty provided the copyright
+notice and this notice are preserved. -->
+
+<!DOCTYPE feature SYSTEM "gdb-target.dtd">
+<feature name="org.gnu.gdb.aarch64.core">
+<reg name="x0" bitsize="64"/>
+<reg name="x1" bitsize="64"/>
+<reg name="x2" bitsize="64"/>
+<reg name="x3" bitsize="64"/>
+<reg name="x4" bitsize="64"/>
+<reg name="x5" bitsize="64"/>
+<reg name="x6" bitsize="64"/>
+<reg name="x7" bitsize="64"/>
+<reg name="x8" bitsize="64"/>
+<reg name="x9" bitsize="64"/>
+<reg name="x10" bitsize="64"/>
+<reg name="x11" bitsize="64"/>
+<reg name="x12" bitsize="64"/>
+<reg name="x13" bitsize="64"/>
+<reg name="x14" bitsize="64"/>
+<reg name="x15" bitsize="64"/>
+<reg name="x16" bitsize="64"/>
+<reg name="x17" bitsize="64"/>
+<reg name="x18" bitsize="64"/>
+<reg name="x19" bitsize="64"/>
+<reg name="x20" bitsize="64"/>
+<reg name="x21" bitsize="64"/>
+<reg name="x22" bitsize="64"/>
+<reg name="x23" bitsize="64"/>
+<reg name="x24" bitsize="64"/>
+<reg name="x25" bitsize="64"/>
+<reg name="x26" bitsize="64"/>
+<reg name="x27" bitsize="64"/>
+<reg name="x28" bitsize="64"/>
+<reg name="x29" bitsize="64"/>
+<reg name="x30" bitsize="64"/>
+<reg name="sp" bitsize="64" type="data_ptr"/>
+
+<reg name="pc" bitsize="64" type="code_ptr"/>
+<reg name="cpsr" bitsize="32"/>
+</feature>
+#2d
+raw data: +
+raw data: $qXfer:features:read:aarch64-fpu.xml:0,ffb#d3
+GOT: +
+<- +
+GOT: $m<?xml version="1.0"?>
+<!-- Copyright (C) 2009-2012 Free Software Foundation, Inc.
+Contributed by ARM Ltd.
+
+Copying and distribution of this file, with or without modification,
+are permitted in any medium without royalty provided the copyright
+notice and this notice are preserved. -->
+
+<!DOCTYPE feature SYSTEM "gdb-target.dtd">
+<feature name="org.gnu.gdb.aarch64.fpu">
+<vector id="v2d" type="ieee_double" count="2"/>
+<vector id="v2u" type="uint64" count="2"/>
+<vector id="v2i" type="int64" count="2"/>
+<vector id="v4f" type="ieee_single" count="4"/>
+<vector id="v4u" type="uint32" count="4"/>
+<vector id="v4i" type="int32" count="4"/>
+<vector id="v8u" type="uint16" count="8"/>
+<vector id="v8i" type="int16" count="8"/>
+<vector id="v16u" type="uint8" count="16"/>
+<vector id="v16i" type="int8" count="16"/>
+<vector id="v1u" type="uint128" count="1"/>
+<vector id="v1i" type="int128" count="1"/>
+<union id="vnd">
+<field name="f" type="v2d"/>
+<field name="u" type="v2u"/>
+<field name="s" type="v2i"/>
+</union>
+<union id="vns">
+<field name="f" type="v4f"/>
+<field name="u" type="v4u"/>
+<field name="s" type="v4i"/>
+</union>
+<union id="vnh">
+<field name="u" type="v8u"/>
+<field name="s" type="v8i"/>
+</union>
+<union id="vnb">
+<field name="u" type="v16u"/>
+<field name="s" type="v16i"/>
+</union>
+<union id="vnq">
+<field name="u" type="v1u"/>
+<field name="s" type="v1i"/>
+</union>
+<union id="aarch64v">
+<field name="d" type="vnd"/>
+<field name="s" type="vns"/>
+<field name="h" type="vnh"/>
+<field name="b" type="vnb"/>
+<field name="q" type="vnq"/>
+</union>
+<reg name="v0" bitsize="128" type="aarch64v" regnum="34"/>
+<reg name="v1" bitsize="128" type="aarch64v" />
+<reg name="v2" bitsize="128" type="aarch64v" />
+<reg name="v3" bitsize="128" type="aarch64v" />
+<reg name="v4" bitsize="128" type="aarch64v" />
+<reg name="v5" bitsize="128" type="aarch64v" />
+<reg name="v6" bitsize="128" type="aarch64v"#81
+<- $m<?xml version="1.0"?>
+<!-- Copyright (C) 2009-2012 Free Software Foundation, Inc.
+Contributed by ARM Ltd.
+
+Copying and distribution of this file, with or without modification,
+are permitted in any medium without royalty provided the copyright
+notice and this notice are preserved. -->
+
+<!DOCTYPE feature SYSTEM "gdb-target.dtd">
+<feature name="org.gnu.gdb.aarch64.fpu">
+<vector id="v2d" type="ieee_double" count="2"/>
+<vector id="v2u" type="uint64" count="2"/>
+<vector id="v2i" type="int64" count="2"/>
+<vector id="v4f" type="ieee_single" count="4"/>
+<vector id="v4u" type="uint32" count="4"/>
+<vector id="v4i" type="int32" count="4"/>
+<vector id="v8u" type="uint16" count="8"/>
+<vector id="v8i" type="int16" count="8"/>
+<vector id="v16u" type="uint8" count="16"/>
+<vector id="v16i" type="int8" count="16"/>
+<vector id="v1u" type="uint128" count="1"/>
+<vector id="v1i" type="int128" count="1"/>
+<union id="vnd">
+<field name="f" type="v2d"/>
+<field name="u" type="v2u"/>
+<field name="s" type="v2i"/>
+</union>
+<union id="vns">
+<field name="f" type="v4f"/>
+<field name="u" type="v4u"/>
+<field name="s" type="v4i"/>
+</union>
+<union id="vnh">
+<field name="u" type="v8u"/>
+<field name="s" type="v8i"/>
+</union>
+<union id="vnb">
+<field name="u" type="v16u"/>
+<field name="s" type="v16i"/>
+</union>
+<union id="vnq">
+<field name="u" type="v1u"/>
+<field name="s" type="v1i"/>
+</union>
+<union id="aarch64v">
+<field name="d" type="vnd"/>
+<field name="s" type="vns"/>
+<field name="h" type="vnh"/>
+<field name="b" type="vnb"/>
+<field name="q" type="vnq"/>
+</union>
+<reg name="v0" bitsize="128" type="aarch64v" regnum="34"/>
+<reg name="v1" bitsize="128" type="aarch64v" />
+<reg name="v2" bitsize="128" type="aarch64v" />
+<reg name="v3" bitsize="128" type="aarch64v" />
+<reg name="v4" bitsize="128" type="aarch64v" />
+<reg name="v5" bitsize="128" type="aarch64v" />
+<reg name="v6" bitsize="128" type="aarch64v"#81
+raw data: +
+raw data: $qXfer:features:read:aarch64-fpu.xml:7fd,802#10
+GOT: +
+<- +
+GOT: $l />
+<reg name="v7" bitsize="128" type="aarch64v" />
+<reg name="v8" bitsize="128" type="aarch64v" />
+<reg name="v9" bitsize="128" type="aarch64v" />
+<reg name="v10" bitsize="128" type="aarch64v"/>
+<reg name="v11" bitsize="128" type="aarch64v"/>
+<reg name="v12" bitsize="128" type="aarch64v"/>
+<reg name="v13" bitsize="128" type="aarch64v"/>
+<reg name="v14" bitsize="128" type="aarch64v"/>
+<reg name="v15" bitsize="128" type="aarch64v"/>
+<reg name="v16" bitsize="128" type="aarch64v"/>
+<reg name="v17" bitsize="128" type="aarch64v"/>
+<reg name="v18" bitsize="128" type="aarch64v"/>
+<reg name="v19" bitsize="128" type="aarch64v"/>
+<reg name="v20" bitsize="128" type="aarch64v"/>
+<reg name="v21" bitsize="128" type="aarch64v"/>
+<reg name="v22" bitsize="128" type="aarch64v"/>
+<reg name="v23" bitsize="128" type="aarch64v"/>
+<reg name="v24" bitsize="128" type="aarch64v"/>
+<reg name="v25" bitsize="128" type="aarch64v"/>
+<reg name="v26" bitsize="128" type="aarch64v"/>
+<reg name="v27" bitsize="128" type="aarch64v"/>
+<reg name="v28" bitsize="128" type="aarch64v"/>
+<reg name="v29" bitsize="128" type="aarch64v"/>
+<reg name="v30" bitsize="128" type="aarch64v"/>
+<reg name="v31" bitsize="128" type="aarch64v"/>
+<reg name="fpsr" bitsize="32"/>
+<reg name="fpcr" bitsize="32"/>
+</feature>
+#2e
+<- $l />
+<reg name="v7" bitsize="128" type="aarch64v" />
+<reg name="v8" bitsize="128" type="aarch64v" />
+<reg name="v9" bitsize="128" type="aarch64v" />
+<reg name="v10" bitsize="128" type="aarch64v"/>
+<reg name="v11" bitsize="128" type="aarch64v"/>
+<reg name="v12" bitsize="128" type="aarch64v"/>
+<reg name="v13" bitsize="128" type="aarch64v"/>
+<reg name="v14" bitsize="128" type="aarch64v"/>
+<reg name="v15" bitsize="128" type="aarch64v"/>
+<reg name="v16" bitsize="128" type="aarch64v"/>
+<reg name="v17" bitsize="128" type="aarch64v"/>
+<reg name="v18" bitsize="128" type="aarch64v"/>
+<reg name="v19" bitsize="128" type="aarch64v"/>
+<reg name="v20" bitsize="128" type="aarch64v"/>
+<reg name="v21" bitsize="128" type="aarch64v"/>
+<reg name="v22" bitsize="128" type="aarch64v"/>
+<reg name="v23" bitsize="128" type="aarch64v"/>
+<reg name="v24" bitsize="128" type="aarch64v"/>
+<reg name="v25" bitsize="128" type="aarch64v"/>
+<reg name="v26" bitsize="128" type="aarch64v"/>
+<reg name="v27" bitsize="128" type="aarch64v"/>
+<reg name="v28" bitsize="128" type="aarch64v"/>
+<reg name="v29" bitsize="128" type="aarch64v"/>
+<reg name="v30" bitsize="128" type="aarch64v"/>
+<reg name="v31" bitsize="128" type="aarch64v"/>
+<reg name="fpsr" bitsize="32"/>
+<reg name="fpcr" bitsize="32"/>
+</feature>
+#2e
+raw data: +
+raw data: $?#3f
+GOT: +
+<- +
+GOT: $T05thread:01;#07
+<- $T05thread:01;#07
+raw data: +$Hc-1#09
+GOT: +
+<- +
+GOT: $OK#9a
+<- $OK#9a
+raw data: +$qAttached#8f
+GOT: +
+<- +
+GOT: $1#31
+<- $1#31
+raw data: +
+raw data: $qOffsets#4b
+GOT: +$#00
+<- +$#00
+raw data: +
+raw data: $g#67
+GOT: +$000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000008100000000cd030040#f7
+<- +$000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000008100000000cd030040#f7
+raw data: +
+raw data: $m81000000,4#56
+GOT: +$44070010#90
+<- +$44070010#90
+raw data: +
+raw data: $m80fffffc,4#96
+GOT: +$00000000#80
+<- +$00000000#80
+raw data: +
+raw data: $m81000000,4#56
+GOT: +$44070010#90
+<- +$44070010#90
+raw data: +
+raw data: $qSymbol::#5b
+GOT: +$#00
+<- +$#00
+raw data: +
+raw data: $qTStatus#49
+GOT: +
+<- +
+GOT: $#00
+<- $#00
+raw data: +
+raw data: $qTStatus#49
+GOT: +$#00
+<- +$#00
+raw data: +
+raw data: $Z0,ffff00004008bd64,4#6a
+GOT: +
+<- +
+GOT: $OK#9a
+<- $OK#9a
+raw data: +
+raw data: $vCont?#49
+GOT: +
+<- +
+GOT: $vCont;c;C;s;S#62
+<- $vCont;c;C;s;S#62
+raw data: +
+raw data: $vCont;s:1;c#c1
+GOT: +
+<- +
+GOT: $T05thread:01;#07
+<- $T05thread:01;#07
+raw data: +
+raw data: $g#67
+GOT: +$0000000000000000000000000000000000000000000000000000000000000000e8000081000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000400008100000000cd030040#41
+<- +$0000000000000000000000000000000000000000000000000000000000000000e8000081000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000400008100000000cd030040#41
+raw data: +
+raw data: $m81000004,4#5a
+GOT: +$65060058#9e
+<- +$65060058#9e
+raw data: +$m81000000,4#56
+GOT: +$44070010#90
+<- +$44070010#90
+raw data: +
+raw data: $m81000004,4#5a
+GOT: +$65060058#9e
+<- +$65060058#9e
+raw data: +
+raw data: $z0,ffff00004008bd64,4#8a
+GOT: +$OK#9a
+<- +$OK#9a
+raw data: +
+raw data: $p42#d6
+GOT: +$00000000#80
+<- +$00000000#80
+raw data: +
+raw data: $p43#d7
+GOT: +
+<- +
+GOT: $00000000#80
+<- $00000000#80
+raw data: +
+
+
+
+
+raw data: $qTStatus#49
+GOT: +$#00
+<- +$#00
+raw data: +
+raw data: $Z0,ffff00004008bd64,4#6a
+GOT: +$OK#9a
+<- +$OK#9a
+raw data: +
+raw data: $vCont;s:1;c#c1
+GOT: +
+<- +
+GOT: $T05thread:01;#07
+<- $T05thread:01;#07
+raw data: +
+raw data: $g#67
+GOT: +
+<- +
+GOT: $0000000000000000000000000000000000000000000000000000000000000000e800008100000000e800008100000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000800008100000000cd030040#8b
+<- $0000000000000000000000000000000000000000000000000000000000000000e800008100000000e800008100000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000800008100000000cd030040#8b
+raw data: +
+raw data: $m81000008,4#5e
+GOT: +$9f0005eb#2b
+<- +$9f0005eb#2b
+raw data: +
+raw data: $m81000004,4#5a
+GOT: +$65060058#9e
+<- +$65060058#9e
+raw data: +
+raw data: $m81000008,4#5e
+GOT: +$9f0005eb#2b
+<- +$9f0005eb#2b
+raw data: +
+raw data: $z0,ffff00004008bd64,4#8a
+GOT: +
+<- +
+GOT: $OK#9a
+<- $OK#9a
+raw data: +
+
+
+i r
+raw data: $p42#d6
+GOT: +$00000000#80
+<- +$00000000#80
+raw data: +
+raw data: $p43#d7
+GOT: +$00000000#80
+<- +$00000000#80
+raw data: +
+raw data: $mffff000000000000,4#a5
+GOT: +
+<- +
+GOT: $00000000#80
+<- $00000000#80
+raw data: +
+raw data: $mffff000000000000,4#a5
+GOT: +
+<- +
+GOT: $00000000#80
+<- $00000000#80
+raw data: +
+raw data: $mffff000000000004,4#a9
+GOT: +$00000000#80
+<- +$00000000#80
+raw data: +
+raw data: $mffff000000000008,4#ad
+GOT: +$00000000#80
+<- +$00000000#80
+raw data: +
+raw data: $mffff00000000000c,4#d8
+GOT: +$00000000#80
+<- +$00000000#80
+raw data: +
+raw data: $mffff000000000010,4#a6
+GOT: +$00000000#80
+<- +$00000000#80
+raw data: +
+raw data: $mffff000000000014,4#aa
+GOT: +$00000000#80
+<- +$00000000#80
+raw data: +
+raw data: $mffff000000000018,4#ae
+GOT: +$00000000#80
+<- +$00000000#80
+raw data: +
+raw data: $mffff00000000001c,4#d9
+GOT: +$00000000#80
+<- +$00000000#80
+raw data: +
+raw data: $P0=0100000000000000#be
+GOT: +
+<- +
+GOT: $OK#9a
+<- $OK#9a
+raw data: +
+raw data: $g#67
+GOT: +
+<- +
+GOT: $0100000000000000000000000000000000000000000000000000000000000000e800008100000000e800008100000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000800008100000000cd030040#8c
+<- $0100000000000000000000000000000000000000000000000000000000000000e800008100000000e800008100000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000800008100000000cd030040#8c
+raw data: +
+raw data: $m81000008,4#5e
+GOT: +$9f0005eb#2b
+<- +$9f0005eb#2b
+raw data: +
+raw data: $m81000004,4#5a
+GOT: +$65060058#9e
+<- +$65060058#9e
+raw data: +
+raw data: $m81000008,4#5e
+GOT: +$9f0005eb#2b
+<- +$9f0005eb#2b
+raw data: +
+raw data: $P0=0200000000000000#bf
+GOT: +$OK#9a
+<- +$OK#9a
+raw data: +
+raw data: $g#67
+GOT: +$0200000000000000000000000000000000000000000000000000000000000000e800008100000000e800008100000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000800008100000000cd030040#8d
+<- +$0200000000000000000000000000000000000000000000000000000000000000e800008100000000e800008100000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000800008100000000cd030040#8d
+raw data: +
+raw data: $m81000008,4#5e
+GOT: +
+<- +
+GOT: $9f0005eb#2b
+<- $9f0005eb#2b
+raw data: +
+raw data: $m81000004,4#5aOT: +
+<- +
+GOT: $65060058#9e
+<- $65060058#9e
+raw data: +
+raw data: $m81000008,4#5e
+GOT: +
+<- +
+GOT: $9f0005eb#2b
+<- $9f0005eb#2b
+raw data: +
+raw data: $P0=7856341200000000#e1
+GOT: +
+<- +
+GOT: $OK#9a
+<- $OK#9a
+raw data: +
+raw data: $g#67
+GOT: +$7856341200000000000000000000000000000000000000000000000000000000e800008100000000e800008100000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000800008100000000cd030040#af
+<- +$7856341200000000000000000000000000000000000000000000000000000000e800008100000000e800008100000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000800008100000000cd030040#af
+raw data: +
+raw data: $m81000008,4#5e
+GOT: +$9f0005eb#2b
+<- +$9f0005eb#2b
+raw data: +
+raw data: $m81000004,4#5a
+GOT: +$65060058#9e
+<- +$65060058#9e
+raw data: +
+raw data: $m81000008,4#5e
+GOT: +$9f0005eb#2b
+<- +$9f0005eb#2b
+raw data: +
+raw data: $P0=0156341200000000#d3
+GOT: +$OK#9a
+<- +$OK#9a
+raw data: +
+raw data: $g#67
+GOT: +$0156341200000000000000000000000000000000000000000000000000000000e800008100000000e800008100000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000800008100000000cd030040#a1
+<- +$0156341200000000000000000000000000000000000000000000000000000000e800008100000000e800008100000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000800008100000000cd030040#a1
+raw data: +
+raw data: $m81000008,4#5e
+GOT: +
+<- +
+GOT: $9f0005eb#2b
+<- $9f0005eb#2b
+raw data: +$m81000004,4#5a
+GOT: +
+<- +
+GOT: $65060058#9e
+<- $65060058#9e
+raw data: +
+raw data: $m81000008,4#5e
+GOT: +$9f0005eb#2b
+<- +$9f0005eb#2b
+raw data: +

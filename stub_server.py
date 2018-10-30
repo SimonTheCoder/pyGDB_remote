@@ -29,17 +29,20 @@ class Stub_server(object):
         if __DEBUG__ is True:print "connet from:",self.gdb_addr
         while True:
             data = self.conn.recv(4096+8)
+            if __DEBUG__:print "--> %s" % data
             if len(data) == 0:
-                conn.close()
+                self.conn.close()
                 print "connect lost."
                 break
-            #handle with multi-thread
-            Thread(target = self.sequence_handle, args =(data,)).start()
-
+            ##handle with multi-thread
+            #Thread(target = self.sequence_handle, args =(data,)).start()
+            self.sequence_handle(data)
 
 
     def send(self, data):
         self.last_send = data
+        if __DEBUG__:print "<-- %s" % data 
+        self.conn.sendall(data)
         pass
 
     def resend(self):
@@ -53,6 +56,9 @@ class Stub_server(object):
             print "Waring: buf is None or empty."
             return
         while len(buf) > 0:    
+            if buf[0]=="+":
+                buf = buf[1:]
+                continue
             if buf[0]=='-':
                 if __DEBUG__:print "Got -, resend."
                 self.resend()
@@ -80,6 +86,7 @@ class Stub_server(object):
                 
 
                 self.cmd_handle(cmd)
+                break
 
     def cmd_handle(self, cmd):
         if cmd is None or len(cmd) < 1:
@@ -89,16 +96,17 @@ class Stub_server(object):
         
         #ack, cmd received.
         self.send("+")
-         
-        if cmd == "Supported:multiprocess+;qRelocInsn+":
-            self.send_cmd("PacketSize=1000;qXfer:features:read+")
+        m = None 
+        m = re.match(r'qSupported:(.*)',cmd) #qSupported:multiprocess+;qRelocInsn+":
+        if m is not None:
+            self.send_cmd("PacketSize=10485760;qXfer:features:read+")
             return
         
         if cmd == "Hg0":
             self.send_cmd("OK")
             return
-        
-        m  = re.match(r'qXfer:features:read:(.*\.xml).*', "qXfer:features:read:aarch64-core.xml:0,ffb")
+        m = None
+        m = re.match(r'qXfer:features:read:(.*\.xml).*', cmd)
         if m is not None and len(m.groups()) > 0:
             read_xml = "l"
             target_file = m.groups()[0]
@@ -106,9 +114,35 @@ class Stub_server(object):
                 read_xml = read_xml + f.read();
             self.send_cmd(read_xml)
             return
-         
-        print "Waring: cmd not handled! cmd = %s" % cmd
+        if cmd == "qAttached":
+            self.send_cmd("1")
+            return
+        if cmd == "qOffsets":
+            self.send_cmd("")
+            return
+        if cmd == "?":
+            self.send_cmd("T05thread:01;")
+            return
+        if cmd == "Hc-1":
+            self.send_cmd("OK")
+            return
+        if cmd == "qfThreadInfo":
+            self.send_cmd("m1")
+            return
+        if cmd == "qsThreadInfo":
+            self.send_cmd("l")
+            return
+        if cmd == "g":
+           self.send_cmd("000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000008100000000cd030040")
+           return
         
+        m = re.match(r'm([a-fA-F0-9]+),([0-9])',cmd)
+        if m is not None:
+            if __DEBUG__:print "reading mem: %x size: %d" % (int(m.groups()[0],16), int (m.groups()[1]))
+            self.send_cmd("00000000")
+            return
+        print "Waring: cmd not handled! cmd = %s" % cmd
+        self.send_cmd("") 
 
 if __name__ == "__main__":
     server = Stub_server()

@@ -37,6 +37,15 @@ class Machine(object):
     def get_cpu_info(self,cpunum):
         pass
     
+    def run_break(self):
+        pass
+    
+    def run_continue(self,addr):
+        pass
+    
+    def run_single_step(self,addr):
+        pass
+
     def read_mem_as_hexstr(self,addr,size):
         mem = self.read_mem(addr,size)
         if mem is None:

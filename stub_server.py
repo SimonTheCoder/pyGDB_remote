@@ -61,6 +61,12 @@ class Stub_server(object):
             if buf[0]=="+":
                 buf = buf[1:]
                 continue
+            if buf[0]=="\x03":
+                if __DEBUG__:print "recv \\x03, break."
+                buf = buf[1:]
+                self.machine.run_break()
+                self.send_cmd("T02thread:01;")
+                continue
             if buf[0]=='-':
                 if __DEBUG__:print "Got -, resend."
                 self.resend()
@@ -146,7 +152,7 @@ class Stub_server(object):
 
         m = re.match(r'm([a-fA-F0-9]+),([0-9a-fA-F]+)',cmd)
         if m is not None:
-            if __DEBUG__:print "reading mem: %x size: %d" % (int(m.groups()[0],16), int (m.groups()[1]))
+            if __DEBUG__:print "reading mem: %x size: %d" % (int(m.groups()[0],16), int (m.groups()[1],16))
             #self.send_cmd("00000000")
             read_str = self.machine.read_mem_as_hexstr(int(m.groups()[0],16), int (m.groups()[1],16))
             if read_str is None:
@@ -154,9 +160,9 @@ class Stub_server(object):
             else:
                 self.send_cmd(read_str)
             return
-        m = re.match(r'M([a-fA-F0-9]+),([0-9]+):([0-9a-fA-F]+)',cmd)
+        m = re.match(r'M([a-fA-F0-9]+),([0-9a-fA-F]+):([0-9a-fA-F]+)',cmd)
         if m is not None:
-            if __DEBUG__:print "write mem: %x size: %d" % (int(m.groups()[0],16), int (m.groups()[1]))
+            if __DEBUG__:print "write mem: %x size: %d" % (int(m.groups()[0],16), int (m.groups()[1],16))
             #self.send_cmd("00000000")
             write_res = self.machine.write_mem_as_hexstr(int(m.groups()[0],16), int (m.groups()[1],16),m.groups()[2] )
             if write_res is None:
@@ -164,6 +170,20 @@ class Stub_server(object):
             else:
                 self.send_cmd("OK")
             return
+        
+        m = re.match(r'c([0-9a-fA-F]*)',cmd)
+        if m is not None:
+            if __DEBUG__:print "continue!"
+            addr = m.groups()[0]
+            if addr is None or len(addr) == 0:
+                addr = None
+            else:
+                addr = int(addr,16)
+            res = self.machine.run_continue(addr)
+            if res is None:
+                self.send_cmd("E00")
+            return
+
         print "Waring: cmd not handled! cmd = %s" % cmd
         self.send_cmd("") 
 

@@ -101,10 +101,26 @@ class Unicorn_machine(machine.Machine):
         except UcError,e:
             print "Waring:[%s] write bad address=0x%x size=0x%x len(buf)=0x%x" % (e,start,size,len(buf))
             if self.write_auto_map:
-                round_size = (size & 0xfffffffffffff000)+0x1000;
                 tunc_addr = start & 0xfffffffffffff000
-                print "But write_auto_map is on. let's map it automaticly. addr = 0x%x size = 0x%x" % (tunc_addr,round_size)
-                self.mu.mem_map(tunc_addr,round_size)
+                round_size = ((size+start-tunc_addr-1) & 0xfffffffffffff000)+0x1000;
+                if __DEBUG__:print "But write_auto_map is on. let's map it automaticly. addr = 0x%x size = 0x%x" % (tunc_addr,round_size)
+                try:
+                    for i in self.mu.mem_regions():
+                       if tunc_addr <= i[1] and tunc_addr >= i[0]:
+                       #some area already mapped...
+                           round_size = round_size - (i[1]-tunc_addr) - 1
+                           tunc_addr = i[1] + 1
+                           break
+                    
+                    if __DEBUG__:print "addjusted . addr = 0x%x size = 0x%x" % (tunc_addr,round_size)
+                    if round_size < 4090:
+                        print "Waring: no need to map!!!!"
+                        #round_size = 4096
+                    self.mu.mem_map(tunc_addr,round_size)
+                except UcError,e:
+                    print "Waring:[%s]  auto map failed can not write!!! " % e
+                    for i in self.mu.mem_regions():
+                        print "start 0x%x end 0x%x flag 0x%x" % i
                 try:
                     self.mu.mem_write(start,buf)
                     return "OK"
@@ -113,7 +129,17 @@ class Unicorn_machine(machine.Machine):
                     return None
             return None
         return "OK"  
-
+    
+    def run_continue(self,start_addr):
+        if start_addr is None:
+            start_addr = self.mu.reg_read(unicorn.arm64_const.UC_ARM64_REG_PC)
+        if __DEBUG__:print "unicorn i ki ma su. addr=0x%x" % start_addr    
+        try:
+            self.mu.emu_start(start_addr, 0xffffffffffffffff)
+        except UcError,e:
+            print "Waring:[%s] continue failed." % e
+            return None
+        return "OK"    
     def get_cpus():
         pass
     

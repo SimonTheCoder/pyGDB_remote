@@ -54,10 +54,10 @@ class Unicorn_machine(machine.Machine):
     
 
 
-    def __init__(self):
+    def __init__(self,write_auto_map = True):
         super(Unicorn_machine, self).__init__()
         self.mu = Uc(UC_ARCH_ARM64,UC_MODE_ARM)
-        
+        self.write_auto_map = write_auto_map        
         if __DEBUG__:
             #map a test area
             self.mu.mem_map(0xfffffffffffff000, 4*1024)
@@ -91,12 +91,28 @@ class Unicorn_machine(machine.Machine):
         try:
             mem = self.mu.mem_read(start,size)
         except UcError,e:
-            print "Waring:[%s] request bad address=0x%x size=0x%x" % (e,start,size)
+            print "Waring:[%s] read bad address=0x%x size=0x%x" % (e,start,size)
             return None
         return mem
     
-    def write_mem(start,size,buf):
-        pass
+    def write_mem(self,start,size,buf):
+        try:
+            self.mu.mem_write(start,buf)
+        except UcError,e:
+            print "Waring:[%s] write bad address=0x%x size=0x%x len(buf)=0x%x" % (e,start,size,len(buf))
+            if self.write_auto_map:
+                round_size = (size & 0xfffffffffffff000)+0x1000;
+                tunc_addr = start & 0xfffffffffffff000
+                print "But write_auto_map is on. let's map it automaticly. addr = 0x%x size = 0x%x" % (tunc_addr,round_size)
+                self.mu.mem_map(tunc_addr,round_size)
+                try:
+                    self.mu.mem_write(start,buf)
+                    return "OK"
+                except UcError,e:
+                    print "Waring:[%s] still can not write!!! " % e
+                    return None
+            return None
+        return "OK"  
 
     def get_cpus():
         pass

@@ -44,6 +44,12 @@ class Machine(object):
         else:
             return binascii.b2a_hex(mem)
 
+    def write_mem_as_hexstr(self,addr,size, buf):
+        res = self.write_mem(addr,size,binascii.a2b_hex(buf))
+        if res is None:
+            return res
+        else:
+            return "OK"
     def read_reg_as_hexstr(self,regnum):
         reg = self.read_reg(regnum);
         return self._bin2hex(reg) 

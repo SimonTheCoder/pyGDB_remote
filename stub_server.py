@@ -144,15 +144,25 @@ class Stub_server(object):
             hexstr = m.groups()[0]
             self.machine.set_regs_with_hexstr(hexstr)
 
-        m = re.match(r'm([a-fA-F0-9]+),([0-9])',cmd)
+        m = re.match(r'm([a-fA-F0-9]+),([0-9a-fA-F]+)',cmd)
         if m is not None:
             if __DEBUG__:print "reading mem: %x size: %d" % (int(m.groups()[0],16), int (m.groups()[1]))
             #self.send_cmd("00000000")
-            read_str = self.machine.read_mem_as_hexstr(int(m.groups()[0],16), int (m.groups()[1]))
+            read_str = self.machine.read_mem_as_hexstr(int(m.groups()[0],16), int (m.groups()[1],16))
             if read_str is None:
                 self.send_cmd("E00")
             else:
                 self.send_cmd(read_str)
+            return
+        m = re.match(r'M([a-fA-F0-9]+),([0-9]+):([0-9a-fA-F]+)',cmd)
+        if m is not None:
+            if __DEBUG__:print "write mem: %x size: %d" % (int(m.groups()[0],16), int (m.groups()[1]))
+            #self.send_cmd("00000000")
+            write_res = self.machine.write_mem_as_hexstr(int(m.groups()[0],16), int (m.groups()[1],16),m.groups()[2] )
+            if write_res is None:
+                self.send_cmd("E00")
+            else:
+                self.send_cmd("OK")
             return
         print "Waring: cmd not handled! cmd = %s" % cmd
         self.send_cmd("") 

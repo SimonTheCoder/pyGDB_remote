@@ -45,5 +45,5 @@ notice and this notice are preserved. -->
 <reg name="sp" bitsize="64" type="data_ptr"/>
 
 <reg name="pc" bitsize="64" type="code_ptr"/>
-<reg name="cpsr" bitsize="32"/>
+<reg name="pstate" bitsize="64"/>
 </feature>

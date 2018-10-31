@@ -8,12 +8,14 @@ from threading import Thread,currentThread,activeCount
 __DEBUG__ = True
 
 class Stub_server(object):
-    def __init__(self):
+    def __init__(self, machine):
         self.socks = None
         self.last_send = None
         self.conn = None
         self.gdb_addr = None
         self.need_checksum = True
+        self.RECV_SIZE = 10*1024*1024
+        self.machine = machine
 
 
     def start(self,host="127.0.0.1",port=1234):
@@ -28,7 +30,7 @@ class Stub_server(object):
         self.conn,self.gdb_addr = s.accept()
         if __DEBUG__ is True:print "connet from:",self.gdb_addr
         while True:
-            data = self.conn.recv(4096+8)
+            data = self.conn.recv(self.RECV_SIZE)
             if __DEBUG__:print "--> %s" % data
             if len(data) == 0:
                 self.conn.close()
@@ -99,7 +101,7 @@ class Stub_server(object):
         m = None 
         m = re.match(r'qSupported:(.*)',cmd) #qSupported:multiprocess+;qRelocInsn+":
         if m is not None:
-            self.send_cmd("PacketSize=10485760;qXfer:features:read+")
+            self.send_cmd("PacketSize=%d;qXfer:features:read+" % (self.RECV_SIZE - 4))
             return
         
         if cmd == "Hg0":
@@ -133,17 +135,30 @@ class Stub_server(object):
             self.send_cmd("l")
             return
         if cmd == "g":
-           self.send_cmd("000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000008100000000cd030040")
+           #self.send_cmd("000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000008100000000cd030040")
+           #print len("000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000008100000000cd030040")
+           self.send_cmd(self.machine.get_regs_as_hexstr())
            return
-        
+        m = re.match(r'G([0-9a-fA-F]+)',cmd)
+        if m is not None:
+            hexstr = m.groups()[0]
+            self.machine.set_regs_with_hexstr(hexstr)
+
         m = re.match(r'm([a-fA-F0-9]+),([0-9])',cmd)
         if m is not None:
             if __DEBUG__:print "reading mem: %x size: %d" % (int(m.groups()[0],16), int (m.groups()[1]))
-            self.send_cmd("00000000")
+            #self.send_cmd("00000000")
+            read_str = self.machine.read_mem_as_hexstr(int(m.groups()[0],16), int (m.groups()[1]))
+            if read_str is None:
+                self.send_cmd("E00")
+            else:
+                self.send_cmd(read_str)
             return
         print "Waring: cmd not handled! cmd = %s" % cmd
         self.send_cmd("") 
 
 if __name__ == "__main__":
-    server = Stub_server()
+    import unicorn_machine
+    um = unicorn_machine.Unicorn_machine()
+    server = Stub_server(um)
     server.start()

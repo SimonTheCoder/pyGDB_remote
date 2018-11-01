@@ -58,14 +58,19 @@ class Unicorn_machine(machine.Machine):
         super(Unicorn_machine, self).__init__()
         self.mu = Uc(UC_ARCH_ARM64,UC_MODE_ARM)
         self.mu.hook_add(UC_HOOK_MEM_UNMAPPED,self._uc_hook_mem_unmapped)
+        self.mu.hook_add(UC_HOOK_CODE,self._uc_hook_code) #force UC run every instruction instead of block
         self.write_auto_map = write_auto_map 
 
         self.mu.mem_map(0x80000000, 128*1024*1024) #ram for qemu virt machine, 128M
+        self.last_pc = None
 
         if __DEBUG__:
             #map a test area
             self.mu.mem_map(0xfffffffffffff000, 4*1024)
-    
+    def _uc_hook_code(self,handle,pc,size,user_data):
+        #print("running: %x") % (pc)
+        self.last_pc = pc
+
     def _uc_hook_mem_unmapped(self,handle, access, address, size, value, user_data):
         print("Waring:>>> uc hook type=0x%x addr at 0x%x,  size = 0x%x, value=0x%x, user_data=0x%x" %(access,address, size,value,0))
         #self.mu.emu_stop()
@@ -146,8 +151,14 @@ class Unicorn_machine(machine.Machine):
     def run_break(self):
         if __DEBUG__:print "run_break called."
         self.mu.emu_stop()
-
-
+        if self.last_pc is not None:
+            if __DEBUG__:print "last pc from hook: %x" % self.last_pc
+            pc = self.mu.reg_read(unicorn.arm64_const.UC_ARM64_REG_PC)
+            if pc != self.last_pc:
+                print "Waring: reg_read pc: %x  last_pc: %x. FIX IT." % (pc ,self.last_pc)
+                self.mu.reg_write(unicorn.arm64_const.UC_ARM64_REG_PC,self.last_pc)
+        else:
+            print "Waring: _uc_hook_code not called."
     def run_continue(self,start_addr):
         if start_addr is None:
             start_addr = self.mu.reg_read(unicorn.arm64_const.UC_ARM64_REG_PC)

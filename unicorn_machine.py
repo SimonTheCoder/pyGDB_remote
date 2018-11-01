@@ -64,12 +64,20 @@ class Unicorn_machine(machine.Machine):
         self.mu.mem_map(0x80000000, 128*1024*1024) #ram for qemu virt machine, 128M
         self.last_pc = None
 
+        self.single_inst_state = 0
+
         if __DEBUG__:
             #map a test area
             self.mu.mem_map(0xfffffffffffff000, 4*1024)
     def _uc_hook_code(self,handle,pc,size,user_data):
         #print("running: %x") % (pc)
         self.last_pc = pc
+        if self.single_inst_state == 1:
+            self.single_inst_state = 2
+        elif self.single_inst_state == 2:
+            self.single_inst_state = 3
+            if __DEBUG__:print "Single instruction run end. break."
+            self.run_break()
 
     def _uc_hook_mem_unmapped(self,handle, access, address, size, value, user_data):
         print("Waring:>>> uc hook type=0x%x addr at 0x%x,  size = 0x%x, value=0x%x, user_data=0x%x" %(access,address, size,value,0))
@@ -152,25 +160,35 @@ class Unicorn_machine(machine.Machine):
         if __DEBUG__:print "run_break called."
         self.mu.emu_stop()
         if self.last_pc is not None:
-            if __DEBUG__:print "last pc from hook: %x" % self.last_pc
             pc = self.mu.reg_read(unicorn.arm64_const.UC_ARM64_REG_PC)
+            if __DEBUG__:print "last pc from hook: %x ,pc from UC: %x" % (self.last_pc, pc)
             if pc != self.last_pc:
                 print "Waring: reg_read pc: %x  last_pc: %x. FIX IT." % (pc ,self.last_pc)
                 self.mu.reg_write(unicorn.arm64_const.UC_ARM64_REG_PC,self.last_pc)
         else:
             print "Waring: _uc_hook_code not called."
-    def run_continue(self,start_addr):
+    def run_continue(self,start_addr,end_addr = 0xfffffffffffffffc):
         if start_addr is None:
             start_addr = self.mu.reg_read(unicorn.arm64_const.UC_ARM64_REG_PC)
         if __DEBUG__:print "unicorn i ki ma su. addr=0x%x" % start_addr    
         try:
-            self.mu.emu_start(start_addr, 0xffffffffffffffff)
-            if __DEBUG__:print "unicorn stopped!"    
+            self.mu.emu_start(start_addr, end_addr)
+            if __DEBUG__:print "unicorn stopped! pc=%x" % self.mu.reg_read(unicorn.arm64_const.UC_ARM64_REG_PC)    
+            if self.single_inst_state == 3:
+                #UC will set pc back to the last one. Seems to be a bug.
+                pc = self.mu.reg_read(unicorn.arm64_const.UC_ARM64_REG_PC)
+                if __DEBUG__:print "need adjust PC from %x to %x after single inst mode" % (pc,self.last_pc)
+                self.mu.reg_write(unicorn.arm64_const.UC_ARM64_REG_PC, self.last_pc)
+                self.single_inst_state = 0
         except UcError,e:
             print "Waring:[%s] continue failed." % e
             self.run_break()
             return None
-        return "OK"    
+        return "OK" 
+     
+    def set_single_inst(self):
+        self.single_inst_state = 1
+
     def get_cpus():
         pass
     

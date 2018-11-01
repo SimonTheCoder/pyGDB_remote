@@ -187,7 +187,17 @@ class Stub_server(object):
                     self.send_cmd("T05thread:01;")
             Thread(target = run_continue_thread_func, args=()).start()    
             return
-
+        
+        if cmd == "s":
+            self.machine.set_single_inst()
+            def run_continue_thread_func():
+                res = self.machine.run_continue(None)
+                if res is None:
+                    self.send_cmd("E00")
+                else:
+                    self.send_cmd("T05thread:01;")
+            Thread(target = run_continue_thread_func, args=()).start()
+            return
         print "Waring: cmd not handled! cmd = %s" % cmd
         self.send_cmd("") 
 

@@ -42,10 +42,13 @@ class Machine(object):
     
     def run_continue(self,addr):
         pass
-    
+     
     def run_single_step(self,addr):
         pass
 
+    def set_single_inst(self):
+        pass
+        
     def read_mem_as_hexstr(self,addr,size):
         mem = self.read_mem(addr,size)
         if mem is None:

@@ -65,7 +65,7 @@ class Stub_server(object):
                 if __DEBUG__:print "recv \\x03, break."
                 buf = buf[1:]
                 self.machine.run_break()
-                self.send_cmd("T02thread:01;")
+                #self.send_cmd("T02thread:01;")
                 continue
             if buf[0]=='-':
                 if __DEBUG__:print "Got -, resend."
@@ -179,9 +179,13 @@ class Stub_server(object):
                 addr = None
             else:
                 addr = int(addr,16)
-            res = self.machine.run_continue(addr)
-            if res is None:
-                self.send_cmd("E00")
+            def run_continue_thread_func():
+                res = self.machine.run_continue(addr)
+                if res is None:
+                    self.send_cmd("E00")
+                else:    
+                    self.send_cmd("T05thread:01;")
+            Thread(target = run_continue_thread_func, args=()).start()    
             return
 
         print "Waring: cmd not handled! cmd = %s" % cmd

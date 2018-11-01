@@ -57,10 +57,23 @@ class Unicorn_machine(machine.Machine):
     def __init__(self,write_auto_map = True):
         super(Unicorn_machine, self).__init__()
         self.mu = Uc(UC_ARCH_ARM64,UC_MODE_ARM)
-        self.write_auto_map = write_auto_map        
+        self.mu.hook_add(UC_HOOK_MEM_UNMAPPED,self._uc_hook_mem_unmapped)
+        self.write_auto_map = write_auto_map 
+
+        self.mu.mem_map(0x80000000, 128*1024*1024) #ram for qemu virt machine, 128M
+
         if __DEBUG__:
             #map a test area
             self.mu.mem_map(0xfffffffffffff000, 4*1024)
+    
+    def _uc_hook_mem_unmapped(self,handle, access, address, size, value, user_data):
+        print("Waring:>>> uc hook type=0x%x addr at 0x%x,  size = 0x%x, value=0x%x, user_data=0x%x" %(access,address, size,value,0))
+        #self.mu.emu_stop()
+        if __DEBUG__:
+            print "Machine state:"
+            print "PC: 0x%x" % self.mu.reg_read(unicorn.arm64_const.UC_ARM64_REG_PC)
+            for i in self.mu.mem_regions():
+                print "[ 0x%x , 0x%x ] flag=0x%x" % i
 
     def read_reg(regnum):
         pass
@@ -130,14 +143,21 @@ class Unicorn_machine(machine.Machine):
             return None
         return "OK"  
     
+    def run_break(self):
+        if __DEBUG__:print "run_break called."
+        self.mu.emu_stop()
+
+
     def run_continue(self,start_addr):
         if start_addr is None:
             start_addr = self.mu.reg_read(unicorn.arm64_const.UC_ARM64_REG_PC)
         if __DEBUG__:print "unicorn i ki ma su. addr=0x%x" % start_addr    
         try:
             self.mu.emu_start(start_addr, 0xffffffffffffffff)
+            if __DEBUG__:print "unicorn stopped!"    
         except UcError,e:
             print "Waring:[%s] continue failed." % e
+            self.run_break()
             return None
         return "OK"    
     def get_cpus():

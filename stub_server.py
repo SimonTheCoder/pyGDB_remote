@@ -198,6 +198,14 @@ class Stub_server(object):
                     self.send_cmd("T05thread:01;")
             Thread(target = run_continue_thread_func, args=()).start()
             return
+        if cmd == "qSymbol::":
+            self.send_cmd("OK")
+            return
+        
+        if cmd == "qTStatus":
+            self.send_cmd("T0")
+            return
+            
         print "Waring: cmd not handled! cmd = %s" % cmd
         self.send_cmd("") 
 

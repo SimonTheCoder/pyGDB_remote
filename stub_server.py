@@ -14,7 +14,7 @@ class Stub_server(object):
         self.conn = None
         self.gdb_addr = None
         self.need_checksum = True
-        self.RECV_SIZE = 10*1024*1024
+        self.RECV_SIZE = 16388 
         self.machine = machine
 
 
@@ -107,7 +107,7 @@ class Stub_server(object):
         m = None 
         m = re.match(r'qSupported:(.*)',cmd) #qSupported:multiprocess+;qRelocInsn+":
         if m is not None:
-            self.send_cmd("PacketSize=%d;qXfer:features:read+" % (self.RECV_SIZE - 4))
+            self.send_cmd("PacketSize=%x;qXfer:features:read+" % (self.RECV_SIZE - 4))
             return
         
         if cmd == "Hg0":

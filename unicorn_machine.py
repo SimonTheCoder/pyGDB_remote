@@ -5,14 +5,6 @@ import machine
 
 __DEBUG__ = True
 
-class Mem_map(object):
-    def __init__(self):
-        pass
-    
-    def find_region(start,size):
-        pass
-
-
 class Unicorn_machine(machine.Machine):
     uc_gen_regs = [
     unicorn.arm64_const.UC_ARM64_REG_X0,
@@ -58,7 +50,10 @@ class Unicorn_machine(machine.Machine):
         super(Unicorn_machine, self).__init__()
         self.mu = Uc(UC_ARCH_ARM64,UC_MODE_ARM)
         self.mu.hook_add(UC_HOOK_MEM_UNMAPPED,self._uc_hook_mem_unmapped)
-        self.mu.hook_add(UC_HOOK_CODE,self._uc_hook_code) #force UC run every instruction instead of block
+
+        #force UC run every instruction instead of block
+        self.mu.hook_add(UC_HOOK_CODE,self._uc_hook_code)
+        
         self.write_auto_map = write_auto_map 
 
         self.mu.mem_map(0x80000000, 128*1024*1024) #ram for qemu virt machine, 128M
@@ -98,7 +93,7 @@ class Unicorn_machine(machine.Machine):
         regs = list()
         for reg_name in Unicorn_machine.uc_gen_regs:
             regs.append(self.mu.reg_read(reg_name))
-        
+ 
         nzcv = self.mu.reg_read(Unicorn_machine.uc_nzcv_reg)
         #TODO OR system status to nzcv to get a CPSR
         cpsr = nzcv | 0x0000000000000000
@@ -120,7 +115,7 @@ class Unicorn_machine(machine.Machine):
             print "Waring:[%s] read bad address=0x%x size=0x%x" % (e,start,size)
             return None
         return mem
-    
+ 
     def write_mem(self,start,size,buf):
         try:
             self.mu.mem_write(start,buf)
@@ -155,7 +150,7 @@ class Unicorn_machine(machine.Machine):
                     return None
             return None
         return "OK"  
-    
+ 
     def run_break(self):
         if __DEBUG__:print "run_break called."
         self.mu.emu_stop()
@@ -167,6 +162,7 @@ class Unicorn_machine(machine.Machine):
                 self.mu.reg_write(unicorn.arm64_const.UC_ARM64_REG_PC,self.last_pc)
         else:
             print "Waring: _uc_hook_code not called."
+
     def run_continue(self,start_addr,end_addr = 0xfffffffffffffffc):
         if start_addr is None:
             start_addr = self.mu.reg_read(unicorn.arm64_const.UC_ARM64_REG_PC)
@@ -185,7 +181,7 @@ class Unicorn_machine(machine.Machine):
             self.run_break()
             return None
         return "OK" 
-     
+ 
     def set_single_inst(self):
         self.single_inst_state = 1
 

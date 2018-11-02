@@ -72,6 +72,7 @@ class Machine(object):
         for reg in regs:
             hexstr = hexstr + self._bin2hex(reg)
         return hexstr
+
     def set_regs_with_hexstr(self,hexstr):
         binarr = binascii.a2b_hex(hexstr)
         binarr_split = [binarr[i:i+self.get_machine_maxbits()/8] for i in xrange(0,len(binarr),self.get_machine_maxbits()/8)]

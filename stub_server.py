@@ -205,4 +205,12 @@ if __name__ == "__main__":
     import unicorn_machine
     um = unicorn_machine.Unicorn_machine()
     server = Stub_server(um)
-    server.start()
+
+    import sys
+    #print sys.argv[0]
+    if sys.argv[0] == '/usr/bin/ipython':
+        print "Run under ipython."
+        server_thread = Thread(target=server.start, args=())
+        server_thread.start()
+    else:    
+        server.start()

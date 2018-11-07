@@ -118,8 +118,11 @@ class Stub_server(object):
         if m is not None and len(m.groups()) > 0:
             read_xml = "l"
             target_file = m.groups()[0]
-            with open(target_file,"r") as f:
-                read_xml = read_xml + f.read();
+            if target_file == "target.xml":
+                read_xml = read_xml + self.machine.get_target_xml()
+            else:
+                with open(target_file,"r") as f:
+                    read_xml = read_xml + f.read();
             self.send_cmd(read_xml)
             return
         if cmd == "qAttached":
@@ -156,7 +159,10 @@ class Stub_server(object):
             #self.send_cmd("00000000")
             read_str = self.machine.read_mem_as_hexstr(int(m.groups()[0],16), int (m.groups()[1],16))
             if read_str is None:
-                self.send_cmd("E00")
+
+                #some old urgly gdb can not afford the E00
+                #self.send_cmd("E00")
+                self.send_cmd("00")
             else:
                 self.send_cmd(read_str)
             return
@@ -211,7 +217,8 @@ class Stub_server(object):
 
 if __name__ == "__main__":
     import unicorn_machine
-    um = unicorn_machine.Unicorn_machine()
+    #um = unicorn_machine.Unicorn_machine_aarch64()
+    um = unicorn_machine.Unicorn_machine_arm()
     server = Stub_server(um)
 
     import sys

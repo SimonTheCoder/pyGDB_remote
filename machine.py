@@ -6,15 +6,16 @@ __DEBUG__ = True
 class Machine(object):
         
 
-    def __init__(self):
-        bit = self.get_machine_maxbits()
+    def __init__(self,bit=64):
+        self.maxbit = bit
+        self.reg_pack_char = None
         if bit == 64 :self.reg_pack_char = "Q"
-        if bit == 32 :self.reg_pack_char == "I"
+        if bit == 32 :self.reg_pack_char = "I"
     def _bin2hex(self,data):
         return binascii.b2a_hex(struct.pack(self.reg_pack_char,data))
 
     def get_machine_maxbits(self):
-        return 64
+        return self.maxbit
 
     def read_reg(self,regnum):
         pass
@@ -68,6 +69,7 @@ class Machine(object):
 
     def get_regs_as_hexstr(self):
         regs = self.get_regs();
+        if __DEBUG__: print "@get_regs_with_hexstr: reg= ",regs
         hexstr = ""
         for reg in regs:
             hexstr = hexstr + self._bin2hex(reg)
@@ -79,7 +81,8 @@ class Machine(object):
         if __DEBUG__: print "@set_regs_with_hexstr: %d regs found. " % len(binarr_split)
         
         self.set_regs([struct.unpack(self.reg_pack_char,reg)[0] for reg in binarr_split])
-
+    def get_target_xml(self):
+        pass
 class Dummy_machine(Machine):
     def __init__(self):
         super(Dummy_machine,self).__init__();
